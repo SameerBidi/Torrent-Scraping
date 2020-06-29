@@ -27,7 +27,7 @@ Parameters:
 {"link" : link, "site" : site}
 ```
 
-## API Examples
+## API Examples and Demos
 ### Try these in your browser
 
 Geting list of sites:
@@ -86,19 +86,36 @@ Returns JSON:
     "DJ.bin (3.4 GB)"
   ]
 }
-
 ```
 
-## Installation
+## Setting up and running the server
+
+You need Python version 3.x to run this
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install necessary libraries:
 
 flask, flask-cors, waitress, requests, bs4, lxml
 
-```bash
+```yaml
 pip install {package name}
 ```
 
+Place blocklist.txt in any location and update the path in [TorrentServer.py](https://github.com/SameerBidi/Torrent-Scraping/blob/master/API/TorrentScraper.py) file
+```python
+with open("path to blocklist.txt", "r") as file:
+```
+This list is used to block adult torrents
+
+Run the [torrent_server.py](https://github.com/SameerBidi/Torrent-Scraping/blob/master/API/torrent_server.py) file
+```bash
+python torrent_server.py
+```
+By default it runs on 0.0.0.0 (accept requests from everywhere) and port: 50000
+
+Then access it using 
+```yaml
+http://server-ip:port/api
+```
 
 ## License
-[MIT](https://choosealicense.com/licenses/mit/)
+[GNU GPLv3](https://choosealicense.com/licenses/gpl-3.0/)

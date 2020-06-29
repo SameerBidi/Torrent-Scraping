@@ -1,0 +1,9 @@
+.customContainer
+{
+  padding: 20px;
+}
+
+tr td
+{
+  cursor: pointer;
+}

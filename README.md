@@ -4,6 +4,10 @@ A simple torrent scraper using Python
 
 Currently scrapes sites: 1337x, ThePirateBay, Rarbg, Ettvdl
 
+## Working Demo
+
+http://samcloud.tplinkdns.com/torrent
+
 ## API
 
 Get a list of sites:

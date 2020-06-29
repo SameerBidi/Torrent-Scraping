@@ -106,7 +106,7 @@ pip install {package name}
 ```
 
 
-Place blocklist.txt in any location and update the path in [TorrentServer.py](https://github.com/SameerBidi/Torrent-Scraping/blob/master/API/TorrentScraper.py) file
+Place [blocklist.txt](https://github.com/SameerBidi/Torrent-Scraping/blob/master/API/blocklist.txt) in any location and update the path in [TorrentServer.py](https://github.com/SameerBidi/Torrent-Scraping/blob/master/API/TorrentScraper.py) file
 ```python
 with open("path to blocklist.txt", "r") as file:
 ```

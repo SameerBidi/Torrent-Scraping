@@ -35,23 +35,55 @@ Geting list of sites:
 http://samcloud.tplinkdns.com:50000/getSites
 
 Returns JSON:
-{"sites": ["1337x", "ThePirateBay", "Rarbg", "Ettvdl"]}
+{
+  "sites": [
+    "1337x",
+    "ThePirateBay",
+    "Rarbg",
+    "Ettvdl"
+  ]
+}
 ```
 
-Searching 1337x for Extraction torrents:
+Searching 1337x for Call of duty torrents:
 ```bash
-http://samcloud.tplinkdns.com:50000/getTorrents?search_key=extraction&site=1337x
+http://samcloud.tplinkdns.com:50000/getTorrents?search_key=call%20of%20duty&site=1337x
 
 Returns JSON:
-{"torrents": [{"name": "Extraction (2020)...", "seeds": 9748, "leeches": 4598, "size": "1.1 GB", "uploader": "YTSAGx", "link": "http://1337x.to/torrent/442...", ...]}
+{
+  "torrents": [
+    {
+      "name": "Call of Duty…",
+      "seeds": 949,
+      "leeches": 61,
+      "size": "3.5 GB",
+      "uploader": "Sigaint",
+      "link": "http://1337x.to/torrent/183…"
+    }
+  ]
+…
+}
 ```
 
 Geting magnet link and file list from 1337x site:
 ```bash
-http://samcloud.tplinkdns.com:50000/getTorrentData?link=http://1337x.to/torrent/4423605/Extraction-2020-720p-WEBRip-YTS-YIFY/&site=1337x
+http://samcloud.tplinkdns.com:50000/getTorrentData?link=http://1337x.to/torrent/1835137/Call-of-Duty-2-1-3-Repack-Mr-DJ/&site=1337x
 
 Returns JSON:
-{"magnet": "magnet:?xt=urn:btih:F0AAAF54DD01F9B1D277C6D78F872F297D75E52D&dn...", "files": ["Extraction.2020... (1.1 GB)", "Extraction.2020.720p.WEBRip.x264.AAC-[YTS.MX].srt (57.2 KB)", "www.YTS.MX.jpg (52.0 KB)"]}
+{
+  "magnet": "magnet:?xt=urn:btih:97A1E506E2A0…",
+  "files": [
+    "Torrent downl..txt (0.0 KB)",
+    "Torrent Downl….txt (0.0 KB)",
+    "Torrent downl….txt (0.0 KB)",
+    "autorun.inf (0.1 KB)",
+    "Instructions.txt (1.3 KB)",
+    "Icon.ico (14.0 KB)",
+    "Setup.exe (21.2 MB)",
+    "DJ.bin (3.4 GB)"
+  ]
+}
+
 ```
 
 ## Installation

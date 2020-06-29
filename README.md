@@ -46,9 +46,11 @@ Returns JSON:
 ```
 
 Searching 1337x for Call of duty torrents:
+
 http://samcloud.tplinkdns.com:50000/getTorrents?search_key=call%20of%20duty&site=1337x
-```yaml
+
 Returns JSON:
+```yaml
 {
   "torrents": [
     {

@@ -7,12 +7,12 @@ Currently scrapes sites: 1337x, ThePirateBay, Rarbg, Ettvdl
 ## API
 
 Get a list of sites:
-```bash
+```yaml
 /getSites
 ```
 
 Search a site for torrents:
-```bash
+```yaml
 /getTorrents
 
 Parameters:
@@ -20,7 +20,7 @@ Parameters:
 ```
 
 Get magnet link and file list:
-```bash
+```yaml
 /getTorrentData
 
 Parameters:
@@ -31,10 +31,11 @@ Parameters:
 ### Try these in your browser
 
 Geting list of sites:
-```bash
+
 http://samcloud.tplinkdns.com:50000/getSites
 
 Returns JSON:
+```yaml
 {
   "sites": [
     "1337x",
@@ -67,10 +68,11 @@ Returns JSON:
 ```
 
 Geting magnet link and file list from 1337x site:
-```bash
+
 http://samcloud.tplinkdns.com:50000/getTorrentData?link=http://1337x.to/torrent/1835137/Call-of-Duty-2-1-3-Repack-Mr-DJ/&site=1337x
 
 Returns JSON:
+```yaml
 {
   "magnet": "magnet:?xt=urn:btih:97A1E506E2A0…",
   "files": [

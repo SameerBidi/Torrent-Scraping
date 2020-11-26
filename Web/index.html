@@ -6,19 +6,23 @@
 
   <script src="js/jquery-min.js"></script>
 
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="css/materialize.min.css">
   <link rel="stylesheet" href="css/style.css">
   
   <script src="js/materialize.min.js"></script>
 
-  <title>Torrent Scraping</title>
+  <title>Torrent</title>
 </head>
 
 <body>
 
   <nav>
     <div class="nav-wrapper blue">
-      <a class="brand-logo center">Torrent Scraping</a>
+      <a class="brand-logo center">Torrent</a>
+      <ul class="right">
+        <li><a id="darkModeBtn" class="right" onclick="setDarkModeActive(!getDarkModeActive()); toggleDarkMode();"><i class="material-icons">color_lens</i></a></li>
+      </ul>
     </div>
   </nav>
 

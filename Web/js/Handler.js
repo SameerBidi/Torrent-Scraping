@@ -4,11 +4,82 @@ $(document).ready
 (
   function()
   {
+    toggleDarkMode();
+
     $('select').formSelect();
     $('.modal').modal({'dismissible': false});
     initSites();
   }
 );
+
+$(document).keypress
+(
+  function(e) 
+  {
+    if(e.which == 13) 
+    {
+      searchTorrents();
+      $('#search_input').blur();
+    }
+});
+
+function getDarkModeActive()
+{
+  let darkModeActive = localStorage.getItem("darkModeActive");
+
+  if(darkModeActive == null || darkModeActive == undefined) return false;
+  else return JSON.parse(darkModeActive);
+}
+
+function setDarkModeActive(darkModeActive)
+{
+  localStorage.setItem("darkModeActive", darkModeActive);
+}
+
+function toggleDarkMode()
+{
+  console.log(getDarkModeActive());
+
+  if(getDarkModeActive())
+  {
+    console.log("this ran");
+    $("nav div").removeClass("grey darken-4");
+    $("nav div").addClass("blue");
+    $("body").removeClass("black");
+    $(".card-panel").removeClass("grey darken-4");
+    $(".btn").removeClass("black");
+    $("body").css("color", "black");
+    $("input").css("color", "black");
+    
+    toggleSelectDarkMode();
+
+    return;
+  }
+
+  $("nav div").removeClass("blue");
+  $("nav div").addClass("grey darken-4");
+  $("body").addClass("black");
+  $(".card-panel").addClass("grey darken-4");
+  $(".btn").addClass("black");
+  $("body").css("color", "white");
+  $("input").css("color", "white");
+
+  toggleSelectDarkMode();
+}
+
+function toggleSelectDarkMode()
+{
+  if(getDarkModeActive())
+  {
+    $("div.select-wrapper li").css("background-color", "white");
+    $(".dropdown-trigger").css("color", "black");
+
+    return;
+  }
+
+  $("div.select-wrapper li").css("background-color", "black");
+  $(".dropdown-trigger").css("color", "white");
+}
 
 function initSites()
 {
@@ -43,6 +114,8 @@ function initSites()
       );
       $('#sites').html(html);
       $('select').formSelect();
+
+      toggleSelectDarkMode();
     },
     function(error)
     {

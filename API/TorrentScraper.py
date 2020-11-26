@@ -30,7 +30,7 @@ def getTPBTrackers():
   return tr
 
 def filterTorrents(torrents):
-  with open("blocklist.txt", "r") as file:
+  with open("/home/dietpi/PythonServers/blocklist.txt", "r") as file:
     blocklist = file.read().split("\n")
     matchList = [s for s in torrents for xs in blocklist if xs in s["name"].lower()]
     return [i for i in torrents if i not in matchList]
@@ -143,7 +143,7 @@ def getRarbgTorrentData(link):
 
 def searchEttv(search_key):
   torrents = []
-  source = requests.get(f"https://www.ettvdl.com/torrents-search.php?search={search_key}", headers=headers).text
+  source = requests.get(f"https://www.ettvcentral.com/torrents-search.php?search={search_key}", headers=headers).text
   soup = BeautifulSoup(source, "lxml")
   for tr in soup.select("table > tr"):
     tds = tr.select("td")

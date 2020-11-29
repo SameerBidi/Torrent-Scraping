@@ -23,6 +23,114 @@ $(document).keypress
     }
 });
 
+function sortTableRow(tableID, colIndex, type)
+{
+  console.log(tableID, colIndex, type);
+  
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById(tableID);
+
+  switching = true;
+  dir = "asc";
+
+  while (switching) {
+    switching = false;
+    rows = table.rows;
+
+    for (i = 1; i < (rows.length - 1); i++) {
+      shouldSwitch = false;
+
+      x = rows[i].getElementsByTagName("TD")[colIndex];
+      y = rows[i + 1].getElementsByTagName("TD")[colIndex];
+
+      let ascCondition, descCondition;
+
+      switch(type)
+      {
+        case "alphabetic":
+          ascCondition = x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase();
+          descCondition = x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase();
+        break;
+
+        case "numeric":
+          ascCondition = Number(x.innerHTML.toLowerCase()) > Number(y.innerHTML.toLowerCase());
+          descCondition = Number(x.innerHTML.toLowerCase()) < Number(y.innerHTML.toLowerCase());
+        break;
+        
+        case "size":
+          ascCondition = convertToBytes(x.innerHTML.toLowerCase()) > convertToBytes(y.innerHTML.toLowerCase());
+          descCondition = convertToBytes(x.innerHTML.toLowerCase()) < convertToBytes(y.innerHTML.toLowerCase());
+        break;
+      }
+
+      if (dir == "asc") {
+        if (ascCondition) {
+          shouldSwitch = true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (descCondition) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      switchcount ++;
+
+      let ths = $(table).find('th');
+
+      ths.each
+      (
+        function(index)
+        {
+          console.log($(this));
+          $(this).html($(this).data('orightml'));
+        }
+      );
+
+      let th = ths[colIndex];
+      
+      if(dir == "asc")
+      {
+        $(th).html($(th).data('orightml') + " ▲");
+      }
+      else if(dir == "desc")
+      {
+        $(th).html($(th).data('orightml') + " ▼");
+      }
+
+    } else {
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+
+function convertToBytes(sizeStr)
+{
+  sizeSplit = sizeStr.split(" ");
+
+  step = 1000.0;
+  bytes = 1;
+
+  sizeList = ['bytes', 'KB', 'MB', 'GB', 'TB'];
+
+  for(let i = 0; i < sizeList.length; i++)
+  {
+    if(sizeList[i].toLowerCase() == sizeSplit[1].toLowerCase())
+      break;
+
+    bytes *= step;
+  }
+
+  return bytes * Number(sizeSplit[0]);
+}
+
 function getDarkModeActive()
 {
   let darkModeActive = localStorage.getItem("darkModeActive");
@@ -38,11 +146,8 @@ function setDarkModeActive(darkModeActive)
 
 function toggleDarkMode()
 {
-  console.log(getDarkModeActive());
-
   if(getDarkModeActive())
   {
-    console.log("this ran");
     $("nav div").removeClass("grey darken-4");
     $("nav div").addClass("blue");
     $("body").removeClass("black");
@@ -90,7 +195,7 @@ function initSites()
     {},
     function(response)
     {
-      if(response['sites'].length === 0)
+      if(response['sites'] == null || response['sites'] == undefined || response['sites'].length == 0)
       {
         M.toast({html: 'Could not retrieve site details, please try after some time', displayLength: 2000});
         return;
@@ -108,6 +213,7 @@ function initSites()
           div.prop('id', site);
           div.find('h5').html(site);
           div.find('h6').html('Torrents will appear here');
+          div.find('table').prop('id', site + "Table");
 
           $('#siteHolder').html($('#siteHolder').html() + div.prop('outerHTML'));
         }
@@ -119,7 +225,7 @@ function initSites()
     },
     function(error)
     {
-      M.toast({html: 'Error Occured, Check console for details', displayLength: 2000});
+      M.toast({html: 'Could not retrieve site details, please try after some time', displayLength: 2000});
       console.log(error);
     }
   );

@@ -12,6 +12,8 @@
   
   <script src="js/materialize.min.js"></script>
 
+  <link rel='shortcut icon' type='image/x-icon' href='favicon.ico' />
+
   <title>Torrent</title>
 </head>
 
@@ -51,12 +53,12 @@
         <table style="display: none;">
           <thead>
             <tr>
-              <th>Sr. No</th>
-              <th>Torrent Name</th>
-              <th>Seeds</th>
-              <th>Leeches</th>
-              <th>Size</th>
-              <th>Uploader</th>
+              <th onclick="sortTableRow($(this).closest('table').attr('id'), 0, 'numeric');" data-orightml="Sr. No">Sr. No</th>
+              <th onclick="sortTableRow($(this).closest('table').attr('id'), 1, 'alphabetic');" data-orightml="Torrent Name">Torrent Name</th>
+              <th onclick="sortTableRow($(this).closest('table').attr('id'), 2, 'numeric');" data-orightml="Seeds">Seeds</th>
+              <th onclick="sortTableRow($(this).closest('table').attr('id'), 3, 'numeric', 'Leeches');" data-orightml="Leeches">Leeches</th>
+              <th onclick="sortTableRow($(this).closest('table').attr('id'), 4, 'size');" data-orightml="Size">Size</th>
+              <th onclick="sortTableRow($(this).closest('table').attr('id'), 5, 'alphabetic');" data-orightml="Uploader">Uploader</th>
             </tr>
           </thead>
           <tbody>

@@ -25,8 +25,6 @@ $(document).keypress
 
 function sortTableRow(tableID, colIndex, type)
 {
-  console.log(tableID, colIndex, type);
-  
   var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
   table = document.getElementById(tableID);
 
@@ -86,7 +84,6 @@ function sortTableRow(tableID, colIndex, type)
       (
         function(index)
         {
-          console.log($(this));
           $(this).html($(this).data('orightml'));
         }
       );

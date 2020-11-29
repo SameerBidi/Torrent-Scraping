@@ -152,6 +152,7 @@ function toggleDarkMode()
     $(".btn").removeClass("black");
     $("body").css("color", "black");
     $("input").css("color", "black");
+    $(".modal").removeClass("grey darken-4");
     
     toggleSelectDarkMode();
 
@@ -165,6 +166,7 @@ function toggleDarkMode()
   $(".btn").addClass("black");
   $("body").css("color", "white");
   $("input").css("color", "white");
+  $(".modal").addClass("grey darken-4");
 
   toggleSelectDarkMode();
 }

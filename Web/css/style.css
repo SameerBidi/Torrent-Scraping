@@ -3,7 +3,8 @@
   padding: 20px;
 }
 
-tr
+tr td,
+tr th
 {
   cursor: pointer;
 }

@@ -8,6 +8,10 @@ headers = {
   "Connection": "keep-alive"
 }
 
+proxies = {
+  "http": "http://ip:port"
+}
+
 def toInt(value):
   return int(value.replace(',', ''))
 
@@ -35,10 +39,12 @@ def filterTorrents(torrents):
     matchList = [s for s in torrents for xs in blocklist if xs in s["name"].lower()]
     return [i for i in torrents if i not in matchList]
 
+def get(url):
+  return requests.get(url, headers=headers, proxies=proxies)
 
 def search1337x(search_key):
   torrents = []
-  source = requests.get(f"http://1337x.to/search/{search_key}/1/", headers=headers).text
+  source = get(f"http://1337x.unblockit.ltd/search/{search_key}/1/").text
   soup = BeautifulSoup(source, "lxml")
   for tr in soup.select("tbody > tr"):
     a = tr.select("td.coll-1 > a")[1]
@@ -49,14 +55,13 @@ def search1337x(search_key):
       "leeches" : toInt(tr.select("td.coll-3")[0].text),
       "size" : str(tr.select("td.coll-4")[0].text).split('B', 1)[0] + "B",
       "uploader" : tr.select("td.coll-5 > a")[0].text,
-      "link" : f"http://1337x.to{a['href']}" \
+      "link" : f"http://1337x.unblockit.ltd{a['href']}" \
     })
-  
   return filterTorrents(torrents)
 
 def get1337xTorrentData(link):
   data = {}
-  source = requests.get(link, headers=headers).text
+  source = get(link).text
   soup = BeautifulSoup(source, "lxml")
   data["magnet"] = soup.select('ul.dropdown-menu > li')[-1].find('a')['href']
   data["torrent_file"] = soup.select('ul.dropdown-menu > li')[0].find('a')['href']
@@ -69,7 +74,7 @@ def get1337xTorrentData(link):
 
 def searchTPB(search_key):
   torrents = []
-  resp_json = requests.get(f"http://apibay.org/q.php?q={search_key}&cat=100,200,300,400,600", headers=headers).json()
+  resp_json = get(f"http://apibay.org/q.php?q={search_key}&cat=100,200,300,400,600").json()
   if(resp_json[0]["name"] == "No results returned"):
     return torrents
 
@@ -88,14 +93,14 @@ def searchTPB(search_key):
 def getTPBTorrentData(link):
   data = {}
   id = dict(x.split('=') for x in requests.utils.urlparse(link).query.split('&'))["id"]
-  resp_json = requests.get(f"http://apibay.org/t.php?id={id}", headers=headers).json()
+  resp_json = get(f"http://apibay.org/t.php?id={id}").json()
   if(resp_json["name"] == "Torrent does not exsist."):
     data["magnet"] = ""
     data["files"] = []
     return data
   magnet = "magnet:?xt=urn:btih:" + resp_json["info_hash"] + "&dn=" + requests.utils.quote(resp_json["name"]) + getTPBTrackers()
   data["magnet"] = magnet
-  resp_json = requests.get(f"http://apibay.org/f.php?id={id}", headers=headers).json()
+  resp_json = get(f"http://apibay.org/f.php?id={id}").json()
   files = []
   try:
     for file in resp_json:
@@ -107,13 +112,12 @@ def getTPBTorrentData(link):
 
 def searchRarbg(search_key):
   torrents = []
-  source = requests.get \
+  source = get \
   (
     f"http://rargb.to/search/?search={search_key}" \
     "&category[]=movies&category[]=tv&category[]=games&" \
     "category[]=music&category[]=anime&category[]=apps&" \
-    "category[]=documentaries&category[]=other", 
-    headers=headers \
+    "category[]=documentaries&category[]=other" \
   ).text
   soup = BeautifulSoup(source, "lxml")
   for tr in soup.select("tr.lista2"):
@@ -131,7 +135,7 @@ def searchRarbg(search_key):
 
 def getRarbgTorrentData(link):
   data = {}
-  source = requests.get(link, headers=headers).text
+  source = get(link).text
   soup = BeautifulSoup(source, "lxml")
   trs = soup.select("table.lista > tbody > tr")
   data["magnet"] = trs[0].a["href"]
@@ -143,7 +147,7 @@ def getRarbgTorrentData(link):
 
 def searchEttv(search_key):
   torrents = []
-  source = requests.get(f"https://www.ettvcentral.com/torrents-search.php?search={search_key}", headers=headers).text
+  source = get(f"http://www.ettvcentral.com/torrents-search.php?search={search_key}").text
   soup = BeautifulSoup(source, "lxml")
   for tr in soup.select("table > tr"):
     tds = tr.select("td")
@@ -160,7 +164,7 @@ def searchEttv(search_key):
 
 def getEttvTorrentData(link):
   data = {}
-  source = requests.get(link, headers=headers).text
+  source = get(link).text
   soup = BeautifulSoup(source, "lxml")
   data["magnet"] = soup.select("div#downloadbox > table > tr > td")[1].a["href"]
   files = []

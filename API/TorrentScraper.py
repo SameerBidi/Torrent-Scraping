@@ -9,7 +9,8 @@ headers = {
 }
 
 proxies = {
-  "http": "http://ip:port"
+  "http": "ip:port",
+  "https": "ip:port"
 }
 
 def toInt(value):
@@ -44,7 +45,7 @@ def get(url):
 
 def search1337x(search_key):
   torrents = []
-  source = get(f"http://1337x.unblockit.ltd/search/{search_key}/1/").text
+  source = get(f"https://1337x.to/search/{search_key}/1/").text
   soup = BeautifulSoup(source, "lxml")
   for tr in soup.select("tbody > tr"):
     a = tr.select("td.coll-1 > a")[1]

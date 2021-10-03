@@ -14,9 +14,9 @@ $(document).ready
 
 $(document).keypress
 (
-  function(e) 
+  function(e)
   {
-    if(e.which == 13) 
+    if(e.which == 13)
     {
       searchTorrents();
       $('#search_input').blur();
@@ -54,7 +54,7 @@ function sortTableRow(tableID, colIndex, type)
           ascCondition = Number(x.innerHTML.toLowerCase()) > Number(y.innerHTML.toLowerCase());
           descCondition = Number(x.innerHTML.toLowerCase()) < Number(y.innerHTML.toLowerCase());
         break;
-        
+
         case "size":
           ascCondition = convertToBytes(x.innerHTML.toLowerCase()) > convertToBytes(y.innerHTML.toLowerCase());
           descCondition = convertToBytes(x.innerHTML.toLowerCase()) < convertToBytes(y.innerHTML.toLowerCase());
@@ -89,7 +89,7 @@ function sortTableRow(tableID, colIndex, type)
       );
 
       let th = ths[colIndex];
-      
+
       if(dir == "asc")
       {
         $(th).html($(th).data('orightml') + " ▲");
@@ -153,7 +153,7 @@ function toggleDarkMode()
     $("body").css("color", "black");
     $("input").css("color", "black");
     $(".modal").removeClass("grey darken-4");
-    
+
     toggleSelectDarkMode();
 
     return;
@@ -177,12 +177,13 @@ function toggleSelectDarkMode()
   {
     $("div.select-wrapper li").css("background-color", "white");
     $(".dropdown-trigger").css("color", "black");
-
+    $(".select-wrapper .caret").css("fill", "black");
     return;
   }
 
   $("div.select-wrapper li").css("background-color", "black");
   $(".dropdown-trigger").css("color", "white");
+  $(".select-wrapper .caret").css("fill", "white");
 }
 
 function initSites()
@@ -255,7 +256,7 @@ function searchTorrents()
   $('h6').html('Torrents will appear here');
   $('h6').css('display', 'block')
   $('.progress').css('display', 'none')
-  
+
   sites.forEach
   (
     function(site)
@@ -319,7 +320,7 @@ function populateTable(torrents, site)
   (
     function(data, index)
     {
-      html += "<tr onclick=\"selectTorrent('" + quoteEscaped(data.name) + "', '" + data.link + "', '" + site + "')\">" + 
+      html += "<tr onclick=\"selectTorrent('" + quoteEscaped(data.name) + "', '" + data.link + "', '" + site + "')\">" +
               "<td>" + (index + 1) + "</td>" +
               "<td class=\"blue-text\">" + data.name + "</td>" +
               "<td class=\"green-text\">" + data.seeds + "</td>" +
@@ -364,7 +365,7 @@ function selectTorrent(name, link, site)
         M.toast({html: 'Server received a invalid request, try again!', displayLength: 2000});
         return;
       }
-      
+
       populateModal(name, response);
 
       $('#loader').css('display', 'none');
@@ -462,7 +463,7 @@ function quoteEscaped(str)
   return str;
 }
 
-function copyToClipboard(value) 
+function copyToClipboard(value)
 {
   let temp = $("<input>");
   $("body").append(temp);

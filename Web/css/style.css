@@ -8,3 +8,7 @@ tr th
 {
   cursor: pointer;
 }
+
+.select-wrapper .caret{
+  fill: white;
+}

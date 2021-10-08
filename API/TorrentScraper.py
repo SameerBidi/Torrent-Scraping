@@ -9,8 +9,8 @@ headers = {
 }
 
 proxies = {
-  "http": "ip:port",
-  "https": "ip:port"
+  "http": "http://ip:port",
+  "https": "https://ip:port"
 }
 
 def toInt(value):
@@ -35,7 +35,7 @@ def getTPBTrackers():
   return tr
 
 def filterTorrents(torrents):
-  with open("/home/dietpi/PythonServers/blocklist.txt", "r") as file:
+  with open("blocklist.txt", "r") as file:
     blocklist = file.read().split("\n")
     matchList = [s for s in torrents for xs in blocklist if xs in s["name"].lower()]
     return [i for i in torrents if i not in matchList]
@@ -45,7 +45,7 @@ def get(url):
 
 def search1337x(search_key):
   torrents = []
-  source = get(f"https://1337x.to/search/{search_key}/1/").text
+  source = get(f"https://1337xx.to/search/{search_key}/1/").text
   soup = BeautifulSoup(source, "lxml")
   for tr in soup.select("tbody > tr"):
     a = tr.select("td.coll-1 > a")[1]
@@ -56,7 +56,7 @@ def search1337x(search_key):
       "leeches" : toInt(tr.select("td.coll-3")[0].text),
       "size" : str(tr.select("td.coll-4")[0].text).split('B', 1)[0] + "B",
       "uploader" : tr.select("td.coll-5 > a")[0].text,
-      "link" : f"http://1337x.unblockit.ltd{a['href']}" \
+      "link" : f"http://1337xx.to{a['href']}" \
     })
   return filterTorrents(torrents)
 
@@ -148,10 +148,11 @@ def getRarbgTorrentData(link):
 
 def searchEttv(search_key):
   torrents = []
-  source = get(f"http://www.ettvcentral.com/torrents-search.php?search={search_key}").text
+  source = get(f"https://www.ettvcentral.com/torrents-search.php?search={search_key}").text
   soup = BeautifulSoup(source, "lxml")
   for tr in soup.select("table > tr"):
     tds = tr.select("td")
+    print(tds)
     torrents.append \
     ({
       "name" : tds[1].a.text,
@@ -159,7 +160,7 @@ def searchEttv(search_key):
       "leeches" : toInt(tds[6].font.b.text),
       "size" : tds[3].text,
       "uploader" : tds[7].a.text,
-      "link" : f"http://www.ettvdl.com{tds[1].a['href']}" \
+      "link" : f"https://www.ettvcentral.com{tds[1].a['href']}" \
     })
   return filterTorrents(torrents)
 

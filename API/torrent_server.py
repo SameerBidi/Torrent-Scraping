@@ -24,7 +24,7 @@ def getMagnet():
 
 @app.route('/getSites', methods=["GET"])
 def getSites():
-  sites = ["1337x", "ThePirateBay", "Ettvdl", "Rarbg"]
+  sites = ["1337x", "ThePirateBay", "Rarbg"]
   return Response(json.dumps({"sites" : sites}), mimetype='application/json')
 
 @app.route('/getTorrents', methods=["GET"])

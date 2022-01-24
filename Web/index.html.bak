@@ -1,0 +1,106 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script src="js/jquery-min.js"></script>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="css/materialize.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  
+  <script src="js/materialize.min.js"></script>
+
+  <link rel='shortcut icon' type='image/x-icon' href='favicon.ico' />
+
+  <title>Torrent</title>
+</head>
+
+<body>
+
+  <nav>
+    <div class="nav-wrapper blue">
+      <a class="brand-logo center">Torrent</a>
+      <ul class="right">
+        <li><a id="darkModeBtn" class="right" onclick="setDarkModeActive(!getDarkModeActive()); toggleDarkMode();"><i class="material-icons">color_lens</i></a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="customContainer">
+    <div class="row card-panel center">
+      <div class="input-field col s12">
+        <input id="search_input" type="text">
+        <label for="search_input">Enter Search Query</label>
+      </div>
+      <div class="input-field col s12">
+        <select id="sites" multiple>
+        </select>
+        <label>Select Torrent Site</label>
+      </div>
+      <a id="searchBtn" class="btn blue" onclick="searchTorrents();">Search Torrents</a>
+    </div>
+    <div id="siteData" class="row card-panel center" style="display: none;">
+      <h5>Site</h5>
+      <a class="btn blue toggle" style="display: none;">Toggle</a>
+      <h6>No Torrents Found</h6>
+      <div class="progress" style="display: none;">
+        <div class="indeterminate"></div>
+      </div>
+      <br>
+      <div style="overflow-x: auto;">
+        <table style="display: none;">
+          <thead>
+            <tr>
+              <th onclick="sortTableRow($(this).closest('table').attr('id'), 0, 'numeric');" data-orightml="Sr. No">Sr. No</th>
+              <th onclick="sortTableRow($(this).closest('table').attr('id'), 1, 'alphabetic');" data-orightml="Torrent Name">Torrent Name</th>
+              <th onclick="sortTableRow($(this).closest('table').attr('id'), 2, 'numeric');" data-orightml="Seeds">Seeds</th>
+              <th onclick="sortTableRow($(this).closest('table').attr('id'), 3, 'numeric', 'Leeches');" data-orightml="Leeches">Leeches</th>
+              <th onclick="sortTableRow($(this).closest('table').attr('id'), 4, 'size');" data-orightml="Size">Size</th>
+              <th onclick="sortTableRow($(this).closest('table').attr('id'), 5, 'alphabetic');" data-orightml="Uploader">Uploader</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <br>
+    <div id="siteHolder"></div>
+  </div>
+
+  <div id="torrentDataModal" class="modal">
+    <div class="modal-content">
+      <div id="loader" class="center">
+        <h5>Loading Torrent Data</h5>
+        <div id="torrentLoader" class="progress">
+          <div class="indeterminate"></div>
+        </div>
+      </div>
+      <div id="torrentData" style="display: none;">
+        <h5 id="tName" class="row green-text">Torrent Name</h5>
+        <div id="files" class="row">
+          <h6>File 1</h6>
+          <h6>File 1</h6>
+          <h6>File 1</h6>
+          <h6>File 1</h6>
+        </div>
+        <div class="row center">
+          <a id="oitBtn" class="btn blue" onclick="$('.modal').modal('close');">Open In Torrent App</a>
+        </div>
+        <div class="row center">
+          <a id="cplBtn" class="btn blue" onclick="$('.modal').modal('close');">Copy Magnet Link</a>
+        </div>
+        <div class="row center">
+          <a class="btn red lighten-1" onclick="$('.modal').modal('close');">Close</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+<script src="js/Handler.js"></script>
+
+</html>

@@ -1,17 +1,20 @@
 import requests
 from bs4 import BeautifulSoup
 import json
+from datetime import date, datetime
 
 headers = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36 Edg/83.0.478.45",
-  "Accept-Encoding": "*",
-  "Connection": "keep-alive"
+  "Accept-Encoding": "*"
 }
 
-proxies = {
-  "http": "http://ip:port",
-  "https": "https://ip:port"
+torrent_proxies_list = {
+  "1337x": ["https://1337xx.to"],
+  "ThePirateBay": ["https://www1.thepiratebay3.to"],
+  "Rarbg": []
 }
+
+max_pages = 3
 
 def toInt(value):
   return int(value.replace(',', ''))
@@ -40,37 +43,54 @@ def filterTorrents(torrents):
     matchList = [s for s in torrents for xs in blocklist if xs in s["name"].lower()]
     return [i for i in torrents if i not in matchList]
 
+def parseDate(date_str, curr_format):
+  return datetime.strptime(date_str, curr_format).timestamp()
+
 def get(url):
-  return requests.get(url, headers=headers, proxies=proxies)
+  return requests.get(url, headers=headers)
 
 def search1337x(search_key):
   torrents = []
-  source = get(f"https://1337xx.to/search/{search_key}/1/").text
-  soup = BeautifulSoup(source, "lxml")
-  for tr in soup.select("tbody > tr"):
-    a = tr.select("td.coll-1 > a")[1]
-    torrents.append \
-    ({
-      "name" : a.text,
-      "seeds" : toInt(tr.select("td.coll-2")[0].text),
-      "leeches" : toInt(tr.select("td.coll-3")[0].text),
-      "size" : str(tr.select("td.coll-4")[0].text).split('B', 1)[0] + "B",
-      "uploader" : tr.select("td.coll-5 > a")[0].text,
-      "link" : f"http://1337xx.to{a['href']}" \
-    })
+  pg_no = 1
+  for proxy in torrent_proxies_list["1337x"]:
+    try:
+      while(pg_no <= max_pages):
+        source = get(f"{proxy}/search/{search_key}/{pg_no}").text
+        print(f"{proxy}/search/{search_key}/{pg_no}")
+        soup = BeautifulSoup(source, "lxml")
+        for tr in soup.select("tbody > tr"):
+          a = tr.select("td.coll-1 > a")[1]
+          torrents.append \
+          ({
+            "name": a.text,
+            "seeds": toInt(tr.select("td.coll-2")[0].text),
+            "leeches": toInt(tr.select("td.coll-3")[0].text),
+            "size": str(tr.select("td.coll-4")[0].text).split('B', 1)[0] + "B",
+            "date": int(parseDate(tr.select("td.coll-date")[0].text.replace("nd", "").replace("th", "").replace("rd", "").replace("st", ""), "%b. %d '%y")),
+            "uploader" : tr.select("td.coll-5 > a")[0].text,
+            "link": f"{proxy}{a['href']}" \
+          })
+        pg_no = pg_no + 1
+      break
+    except Exception as e:
+      print(e)
+      continue
+
   return filterTorrents(torrents)
 
 def get1337xTorrentData(link):
   data = {}
-  source = get(link).text
-  soup = BeautifulSoup(source, "lxml")
-  data["magnet"] = soup.select('ul.dropdown-menu > li')[-1].find('a')['href']
-  data["torrent_file"] = soup.select('ul.dropdown-menu > li')[0].find('a')['href']
-  files = []
-  for li in soup.select('div.file-content > ul > li'):
-    files.append(li.text)
+  try:
+    source = get(link).text
+    soup = BeautifulSoup(source, "lxml")
+    data["magnet"] = soup.select('ul.dropdown-menu > li')[-1].find('a')['href']
+    files = []
+    for li in soup.select('div.file-content > ul > li'):
+      files.append(li.text)
 
-  data["files"] = files
+    data["files"] = files
+  except Exception as e:
+    pass
   return data
 
 def searchTPB(search_key):
@@ -90,6 +110,52 @@ def searchTPB(search_key):
       "link" : f"http://apibay.org/t.php?id={t['id']}" \
     })
   return filterTorrents(torrents)
+
+def searchThePirateBay(search_key):
+  torrents = []
+  pg_no = 1
+  for proxy in torrent_proxies_list["ThePirateBay"]:
+    try:
+      while(pg_no <= max_pages):
+        source = get(f"{proxy}/s/page/{pg_no}/?q={search_key}&category=0").text
+        print(f"{proxy}/search/{search_key}/{pg_no}")
+        soup = BeautifulSoup(source, "lxml")
+        for tr in soup.select("table#searchResult > tbody > tr:not(:last-child)"):
+          a = tr.select("td:nth-of-type(2) > a")[0]
+          print(a)
+          torrents.append \
+          ({
+            "name": a.text,
+            "seeds": toInt(tr.select("td:nth-of-type(6)")[0].text),
+            "leeches": toInt(tr.select("td:nth-of-type(7)")[0].text),
+            "size": str(tr.select("td:nth-of-type(5)")[0].text).replace("i", ""),
+            "date": int(parseDate(tr.select("td:nth-of-type(3)")[0].text, "%Y-%m-%d %H:%M")),
+            "uploader" : tr.select("td:nth-of-type(8) > a")[0].text,
+            "link": f"{proxy}{a['href']}" \
+          })
+        pg_no = pg_no + 1
+      break
+    except Exception as e:
+      print("exception")
+      print(e)
+      continue
+  
+  return filterTorrents(torrents)
+
+def getThePirateBayTorrentData(link):
+  data = {}
+  try:
+    source = get(link).text
+    soup = BeautifulSoup(source, "lxml")
+    data["magnet"] = soup.select('div#details > div:last-child > div.download > a')[0]['href']
+    files = []
+    # for li in soup.select('div.file-content > ul > li'):
+    #   files.append(li.text)
+
+    data["files"] = files
+  except Exception as e:
+    pass
+  return data
 
 def getTPBTorrentData(link):
   data = {}

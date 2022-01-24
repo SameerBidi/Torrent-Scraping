@@ -1,7 +1,4 @@
-.customContainer
-{
-  padding: 20px;
-}
+/* 
 
 tr td,
 tr th
@@ -11,4 +8,8 @@ tr th
 
 .select-wrapper .caret{
   fill: white;
+} */
+
+.customContainer {
+  padding: 15px;
 }

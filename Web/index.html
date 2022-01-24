@@ -7,100 +7,60 @@
   <script src="js/jquery-min.js"></script>
 
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="css/materialize.min.css">
+  <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
   <link rel="stylesheet" href="css/style.css">
   
-  <script src="js/materialize.min.js"></script>
+  <script src="js/bootstrap/bootstrap.min.js"></script>
 
   <link rel='shortcut icon' type='image/x-icon' href='favicon.ico' />
 
   <title>Torrent</title>
 </head>
 
-<body>
-
-  <nav>
-    <div class="nav-wrapper blue">
-      <a class="brand-logo center">Torrent</a>
-      <ul class="right">
-        <li><a id="darkModeBtn" class="right" onclick="setDarkModeActive(!getDarkModeActive()); toggleDarkMode();"><i class="material-icons">color_lens</i></a></li>
-      </ul>
-    </div>
+<body class="bg-secondary">
+  <nav class="navbar navbar-dark bg-dark">
+    <p class="navbar-brand mb-0 text-center w-100">Find Torrents from multiple Sites</span>
   </nav>
 
   <div class="customContainer">
-    <div class="row card-panel center">
-      <div class="input-field col s12">
-        <input id="search_input" type="text">
-        <label for="search_input">Enter Search Query</label>
-      </div>
-      <div class="input-field col s12">
-        <select id="sites" multiple>
-        </select>
-        <label>Select Torrent Site</label>
-      </div>
-      <a id="searchBtn" class="btn blue" onclick="searchTorrents();">Search Torrents</a>
-    </div>
-    <div id="siteData" class="row card-panel center" style="display: none;">
-      <h5>Site</h5>
-      <a class="btn blue toggle" style="display: none;">Toggle</a>
-      <h6>No Torrents Found</h6>
-      <div class="progress" style="display: none;">
-        <div class="indeterminate"></div>
-      </div>
-      <br>
-      <div style="overflow-x: auto;">
-        <table style="display: none;">
-          <thead>
-            <tr>
-              <th onclick="sortTableRow($(this).closest('table').attr('id'), 0, 'numeric');" data-orightml="Sr. No">Sr. No</th>
-              <th onclick="sortTableRow($(this).closest('table').attr('id'), 1, 'alphabetic');" data-orightml="Torrent Name">Torrent Name</th>
-              <th onclick="sortTableRow($(this).closest('table').attr('id'), 2, 'numeric');" data-orightml="Seeds">Seeds</th>
-              <th onclick="sortTableRow($(this).closest('table').attr('id'), 3, 'numeric', 'Leeches');" data-orightml="Leeches">Leeches</th>
-              <th onclick="sortTableRow($(this).closest('table').attr('id'), 4, 'size');" data-orightml="Size">Size</th>
-              <th onclick="sortTableRow($(this).closest('table').attr('id'), 5, 'alphabetic');" data-orightml="Uploader">Uploader</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
+    <div class="card bg-dark">
+      <div class="card-body row text-center justify-content-center">
+        <div class="col-12 col-sm-12 col-md-8 col-lg-6 col-xl-6">
+          <div class="input-group">
+            <span class="input-group-text bg-secondary text-light">Search Query</span>
+            <input type="text" class="form-control bg-dark text-light">
+          </div>
+          <div class="input-group mt-3 text-center justify-content-center">
+            <div class="input-group-text bg-secondary text-light">
+              <input class="form-check-input mt-0" type="checkbox" value="true" checked>
+            </div>
+            <span class="input-group-text bg-secondary text-light">Safe Search</span>
+          </div>
+          <div class="btn-group flex-wrap mt-3" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-secondary active">1337x</button>
+            <button type="button" class="btn btn-secondary">ThePirateBay</button>
+          </div>
+        </div>
       </div>
     </div>
-    <br>
-    <div id="siteHolder"></div>
+    <div class="row justify-content-center mt-3">
+      <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+        <div class="card bg-dark mb-3">
+          <div class="card-body row">
+            <p class="col-12 fs-6 text-warning text-end mb-0">21 Dec 2021</p>
+            <p class="col-12 fs-5 text-light mb-2">Test Torrent Name</p>
+            <p class="col-6 fs-6 text-info mb-2">6.41 GB</p>
+            <p class="col-6 fs-6 text-primary mb-2">teamtelly</p>
+            <p class="col-6 fs-6 text-success mb-2"><span class="text-light">[S] </span>6544</p>
+            <p class="col-6 fs-6 text-danger mb-2"><span class="text-light">[L] </span>666</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div id="torrentDataModal" class="modal">
-    <div class="modal-content">
-      <div id="loader" class="center">
-        <h5>Loading Torrent Data</h5>
-        <div id="torrentLoader" class="progress">
-          <div class="indeterminate"></div>
-        </div>
-      </div>
-      <div id="torrentData" style="display: none;">
-        <h5 id="tName" class="row green-text">Torrent Name</h5>
-        <div id="files" class="row">
-          <h6>File 1</h6>
-          <h6>File 1</h6>
-          <h6>File 1</h6>
-          <h6>File 1</h6>
-        </div>
-        <div class="row center">
-          <a id="oitBtn" class="btn blue" onclick="$('.modal').modal('close');">Open In Torrent App</a>
-        </div>
-        <div class="row center">
-          <a id="cplBtn" class="btn blue" onclick="$('.modal').modal('close');">Copy Magnet Link</a>
-        </div>
-        <div class="row center">
-          <a class="btn red lighten-1" onclick="$('.modal').modal('close');">Close</a>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- <h5 class="text-light position-absolute top-50 start-50 translate-middle">Enter Search Query and Click on a Torrent site</h5> -->
 
 </body>
-
-<script src="js/Handler.js"></script>
 
 </html>

@@ -37,7 +37,7 @@ def getTorrents():
     if(site == "1337x"):
       return Response(json.dumps({"torrents" : scraper.search1337x(search_key)}), mimetype="application/json")
     elif(site == "ThePirateBay"):
-      return Response(json.dumps({"torrents" : scraper.searchTPB(search_key)}), mimetype="application/json")
+      return Response(json.dumps({"torrents" : scraper.searchThePirateBay(search_key)}), mimetype="application/json")
     elif(site == "Rarbg"):
       return Response(json.dumps({"torrents" : scraper.searchRarbg(search_key)}), mimetype="application/json")
     elif(site == "Ettvdl"):
@@ -58,7 +58,7 @@ def getTorrentData():
     if(site == "1337x"):
       return Response(json.dumps(scraper.get1337xTorrentData(link)), mimetype="application/json")
     elif(site == "ThePirateBay"):
-      return Response(json.dumps(scraper.getTPBTorrentData(link)), mimetype="application/json")
+      return Response(json.dumps(scraper.getThePirateBayTorrentData(link)), mimetype="application/json")
     elif(site == "Rarbg"):
       return Response(json.dumps(scraper.getRarbgTorrentData(link)), mimetype="application/json")
     elif(site == "Ettvdl"):

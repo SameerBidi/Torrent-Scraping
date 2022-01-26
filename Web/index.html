@@ -6,9 +6,12 @@
 
   <script src="js/jquery-min.js"></script>
 
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+
   <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
   <link rel="stylesheet" href="css/style.css">
+
+  <script src="js/momentjs/moment.min.js"></script>
   
   <script src="js/bootstrap/bootstrap.min.js"></script>
 
@@ -28,39 +31,96 @@
         <div class="col-12 col-sm-12 col-md-8 col-lg-6 col-xl-6">
           <div class="input-group">
             <span class="input-group-text bg-secondary text-light">Search Query</span>
-            <input type="text" class="form-control bg-dark text-light">
+            <input id="searchInput" type="text" class="form-control bg-dark text-light">
           </div>
-          <div class="input-group mt-3 text-center justify-content-center">
+          <div class="input-group mt-3 text-center justify-content-center" title="Filters out Explicit torrents if turned on, wont work perfectly">
             <div class="input-group-text bg-secondary text-light">
-              <input class="form-check-input mt-0" type="checkbox" value="true" checked>
+              <input id="safeSearchCB" class="form-check-input mt-0" type="checkbox" value="true" checked>
             </div>
-            <span class="input-group-text bg-secondary text-light">Safe Search</span>
+            <span class="input-group-text bg-secondary text-light">Safe Search (Beta)</span>
           </div>
-          <div class="btn-group flex-wrap mt-3" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-secondary active">1337x</button>
-            <button type="button" class="btn btn-secondary">ThePirateBay</button>
+          <button id="siteBtn" type="button" class="btn btn-secondary border d-none">Site Button</button>
+          <div id="siteBtnHolder" class="btn-group flex-wrap mt-3" role="group" aria-label="Basic example">
           </div>
         </div>
       </div>
     </div>
-    <div class="row justify-content-center mt-3">
-      <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
-        <div class="card bg-dark mb-3">
-          <div class="card-body row">
-            <p class="col-12 fs-6 text-warning text-end mb-0">21 Dec 2021</p>
-            <p class="col-12 fs-5 text-light mb-2">Test Torrent Name</p>
-            <p class="col-6 fs-6 text-info mb-2">6.41 GB</p>
-            <p class="col-6 fs-6 text-primary mb-2">teamtelly</p>
-            <p class="col-6 fs-6 text-success mb-2"><span class="text-light">[S] </span>6544</p>
-            <p class="col-6 fs-6 text-danger mb-2"><span class="text-light">[L] </span>666</p>
+    <h5 id="statusText" class="text-light text-center mt-3">Enter Search Query and Click on a Torrent site</h5>
+    <div id="tProgress" class="row mt-3 d-none">
+      <div class="col-12">
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped progress-bar-animated bg-dark w-100" role="progressbar"></div>
+        </div>
+        <p id="tProgressText" class="fs-6 text-light text-center m-0">Searching Torrents</p>
+      </div>
+    </div>
+    <div id="torrentCard" class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 d-none">
+      <div class="card bg-dark mb-3">
+        <div class="card-body row pb-2">
+          <p id="tDate" class="col-12 fs-6 text-warning text-end mb-0">Date</p>
+          <p id="tName" class="col-12 fs-5 text-light mb-2">Torrent Name</p>
+          <p id="tSize" class="col-6 fs-6 text-info mb-2">Size</p>
+          <p id="tUploader" class="col-6 fs-6 text-primary mb-2">Uploader</p>
+          <p id="tSeeders" class="col-6 fs-6 text-success mb-2"><span class="text-light">[S] </span>Seeds</p>
+          <p id="tLeechers" class="col-6 fs-6 text-danger mb-2"><span class="text-light">[L] </span>Leechers</p>
+          <div class="col-12 accordion mt-2">
+            <div class="accordion-item border-0 bg-dark">
+              <h2 class="accordion-header text-center">
+                <button id="tDataBtn" class="btn btn-sm btn-primary text-center" type="button" data-bs-toggle="collapse" data-bs-target="#tDataCollapse" aria-expanded="false">
+                  Get Torrent Data
+                </button>
+              </h2>
+              <div id="tDataCollapse" class="accordion-collapse collapse rounded border bg-dark">
+                <div class="accordion-body">
+                  <p id="tDataStatusText" class="fs-6 text-light text-center m-0">Unable to get torrent data</p>
+                  <div id="tProgressRow" class="row d-none">
+                    <div class="col-12">
+                      <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-secondary w-100" role="progressbar"></div>
+                      </div>
+                      <p class="fs-6 text-light text-center m-0">Loading Torrent Data</p>
+                    </div>
+                  </div>
+                  <div id="tDataRow" class="row d-none">
+                    <div class="col-12">
+                      <div id="fileHolder" class="row">
+                        <p id="fileNameText" class="col-12 text-light m-0 d-none">File Name</p>
+                        <hr id="fileNameHr" class="bg-secondary m-1 d-none">
+                      </div>
+                    </div>
+                    <div class="col-6 mt-2">
+                      <button id="copyMagnetBtn" type="button" class="btn btn-secondary w-100" title="Copy Magnet URL"><i class="fa fa-copy"></i> <i class="fa fa-magnet"></i></button>
+                    </div>
+                    <div class="col-6 mt-2">
+                      <button id="openMagnetBtn" type="button" class="btn btn-secondary w-100" title="Open Magnet URL in Torrent Client"><i class="fa fa-external-link"></i> <i class="fa fa-magnet"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
+    </div>
+    <div id="torrentCardsHolder" class="row justify-content-center mt-3">
+    </div>
+  </div>
+
+  <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 11;">
+    <div id="customToast" class="toast bg-light hide" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+      <div class="toast-header">
+        <strong class="me-auto">Torrent</strong>
+        <small>Just now</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div id="customToastText" class="toast-body">
+        Cannot get sites list
       </div>
     </div>
   </div>
 
-  <!-- <h5 class="text-light position-absolute top-50 start-50 translate-middle">Enter Search Query and Click on a Torrent site</h5> -->
-
 </body>
+
+<script src="js/TorrentHandler.js"></script>
 
 </html>

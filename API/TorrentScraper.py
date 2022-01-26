@@ -2,6 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 import json
 from datetime import date, datetime
+from profanity_filter import ProfanityFilter
+import re
+
+pf = ProfanityFilter()
 
 headers = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36 Edg/83.0.478.45",
@@ -14,7 +18,7 @@ torrent_proxies_list = {
   "Rarbg": []
 }
 
-max_pages = 3
+max_pages = 1
 
 def toInt(value):
   return int(value.replace(',', ''))
@@ -40,7 +44,7 @@ def getTPBTrackers():
 def filterTorrents(torrents):
   with open("blocklist.txt", "r") as file:
     blocklist = file.read().split("\n")
-    matchList = [s for s in torrents for xs in blocklist if xs in s["name"].lower()]
+    matchList = [s for s in torrents for xs in blocklist if len(re.findall(rf'\b{xs}\b', s["name"].lower())) > 0]
     return [i for i in torrents if i not in matchList]
 
 def parseDate(date_str, curr_format):
@@ -49,7 +53,7 @@ def parseDate(date_str, curr_format):
 def get(url):
   return requests.get(url, headers=headers)
 
-def search1337x(search_key):
+def search1337x(search_key, do_safe_search):
   torrents = []
   pg_no = 1
   for proxy in torrent_proxies_list["1337x"]:
@@ -60,23 +64,29 @@ def search1337x(search_key):
         soup = BeautifulSoup(source, "lxml")
         for tr in soup.select("tbody > tr"):
           a = tr.select("td.coll-1 > a")[1]
+          name = a.text
+
+          if do_safe_search and pf.is_profane(name):
+            continue
+
           torrents.append \
           ({
-            "name": a.text,
-            "seeds": toInt(tr.select("td.coll-2")[0].text),
-            "leeches": toInt(tr.select("td.coll-3")[0].text),
+            "name": name,
+            "seeders": toInt(tr.select("td.coll-2")[0].text),
+            "leechers": toInt(tr.select("td.coll-3")[0].text),
             "size": str(tr.select("td.coll-4")[0].text).split('B', 1)[0] + "B",
             "date": int(parseDate(tr.select("td.coll-date")[0].text.replace("nd", "").replace("th", "").replace("rd", "").replace("st", ""), "%b. %d '%y")),
             "uploader" : tr.select("td.coll-5 > a")[0].text,
             "link": f"{proxy}{a['href']}" \
           })
+
         pg_no = pg_no + 1
       break
     except Exception as e:
       print(e)
       continue
 
-  return filterTorrents(torrents)
+  return filterTorrents(torrents) if do_safe_search else torrents
 
 def get1337xTorrentData(link):
   data = {}
@@ -86,10 +96,11 @@ def get1337xTorrentData(link):
     data["magnet"] = soup.select('ul.dropdown-menu > li')[-1].find('a')['href']
     files = []
     for li in soup.select('div.file-content > ul > li'):
-      files.append(li.text)
+      files.append(li.text.replace("\n", ""))
 
     data["files"] = files
   except Exception as e:
+    print(e)
     pass
   return data
 
@@ -103,15 +114,15 @@ def searchTPB(search_key):
     torrents.append \
     ({
       "name" : t["name"],
-      "seeds" : toInt(t["seeders"]),
-      "leeches" : toInt(t["leechers"]),
+      "seeders" : toInt(t["seeders"]),
+      "leechers" : toInt(t["leechers"]),
       "size" : convertBytes(int(t["size"])),
       "uploader" : t["username"],
       "link" : f"http://apibay.org/t.php?id={t['id']}" \
     })
   return filterTorrents(torrents)
 
-def searchThePirateBay(search_key):
+def searchThePirateBay(search_key, do_safe_search):
   torrents = []
   pg_no = 1
   for proxy in torrent_proxies_list["ThePirateBay"]:
@@ -122,12 +133,16 @@ def searchThePirateBay(search_key):
         soup = BeautifulSoup(source, "lxml")
         for tr in soup.select("table#searchResult > tbody > tr:not(:last-child)"):
           a = tr.select("td:nth-of-type(2) > a")[0]
-          print(a)
+          name = a.text
+
+          if do_safe_search and pf.is_profane(name):
+            continue
+
           torrents.append \
           ({
-            "name": a.text,
-            "seeds": toInt(tr.select("td:nth-of-type(6)")[0].text),
-            "leeches": toInt(tr.select("td:nth-of-type(7)")[0].text),
+            "name": name,
+            "seeders": toInt(tr.select("td:nth-of-type(6)")[0].text),
+            "leechers": toInt(tr.select("td:nth-of-type(7)")[0].text),
             "size": str(tr.select("td:nth-of-type(5)")[0].text).replace("i", ""),
             "date": int(parseDate(tr.select("td:nth-of-type(3)")[0].text, "%Y-%m-%d %H:%M")),
             "uploader" : tr.select("td:nth-of-type(8) > a")[0].text,
@@ -136,17 +151,17 @@ def searchThePirateBay(search_key):
         pg_no = pg_no + 1
       break
     except Exception as e:
-      print("exception")
       print(e)
       continue
   
-  return filterTorrents(torrents)
+  return filterTorrents(torrents) if do_safe_search else torrents
 
 def getThePirateBayTorrentData(link):
   data = {}
   try:
     source = get(link).text
     soup = BeautifulSoup(source, "lxml")
+    print(soup.select('div#details > div:last-child > div.download > a'))
     data["magnet"] = soup.select('div#details > div:last-child > div.download > a')[0]['href']
     files = []
     # for li in soup.select('div.file-content > ul > li'):
@@ -154,6 +169,7 @@ def getThePirateBayTorrentData(link):
 
     data["files"] = files
   except Exception as e:
+    print(e)
     pass
   return data
 
@@ -192,8 +208,8 @@ def searchRarbg(search_key):
     torrents.append \
     ({
       "name" : tds[1].a.text,
-      "seeds" : toInt(tds[5].font.text),
-      "leeches" : toInt(tds[6].text),
+      "seeders" : toInt(tds[5].font.text),
+      "leechers" : toInt(tds[6].text),
       "size" : tds[4].text,
       "uploader" : tds[7].text,
       "link" : f"http://rargb.to{tds[1].a['href']}" \
@@ -218,12 +234,11 @@ def searchEttv(search_key):
   soup = BeautifulSoup(source, "lxml")
   for tr in soup.select("table > tr"):
     tds = tr.select("td")
-    print(tds)
     torrents.append \
     ({
       "name" : tds[1].a.text,
-      "seeds" : toInt(tds[5].font.b.text),
-      "leeches" : toInt(tds[6].font.b.text),
+      "seeders" : toInt(tds[5].font.b.text),
+      "leechers" : toInt(tds[6].font.b.text),
       "size" : tds[3].text,
       "uploader" : tds[7].a.text,
       "link" : f"https://www.ettvcentral.com{tds[1].a['href']}" \

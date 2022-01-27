@@ -2,7 +2,7 @@
 
 A simple torrent scraper using Python
 
-Currently scrapes sites: 1337x, ThePirateBay, Rarbg, Ettvdl
+Currently scrapes sites: 1337x, ThePirateBay
 
 ## Working Demo
 
@@ -13,6 +13,8 @@ http://samcloud.tplinkdns.com/torrent
 Get a list of sites:
 ```yaml
 /getSites
+
+No Parameters
 ```
 
 Search a site for torrents:
@@ -20,7 +22,7 @@ Search a site for torrents:
 /getTorrents
 
 Parameters:
-{"search_key" : search_key, "site" : site}
+{"search_key" : search_key, "site_id" : site_id}
 ```
 
 Get magnet link and file list:
@@ -28,7 +30,7 @@ Get magnet link and file list:
 /getTorrentData
 
 Parameters:
-{"link" : link, "site" : site}
+{"link" : link, "site_id" : site_id}
 ```
 
 ## API Examples and Demos
@@ -40,54 +42,72 @@ http://samcloud.tplinkdns.com:50000/getSites
 
 Returns JSON:
 ```yaml
-{
-  "sites": [
-    "1337x",
-    "ThePirateBay",
-    "Rarbg",
-    "Ettvdl"
-  ]
-}
+[
+  {
+    "id": 1,
+    "name": "1337x"
+  },
+  {
+    "id": 2,
+    "name": "ThePirateBay"
+  }
+]
 ```
 
 Searching 1337x for Call of duty torrents:
 
-http://samcloud.tplinkdns.com:50000/getTorrents?search_key=call%20of%20duty&site=1337x
+http://samcloud.tplinkdns.com:50000/getTorrents?search_key=god%20of%20war&site_id=1
 
 Returns JSON:
 ```yaml
-{
-  "torrents": [
-    {
-      "name": "Call of Duty…",
-      "seeds": 949,
-      "leeches": 61,
-      "size": "3.5 GB",
-      "uploader": "Sigaint",
-      "link": "http://1337x.to/torrent/183…"
-    }
-  ]
-…
-}
+[
+  {
+    "name": "God of War (v1.0.1/Day 1 Patch/Build 8008283 + Bonus OST, MULTi18) [FitGirl Repack, Selective Download - from 26 GB]",
+    "seeders": 5804,
+    "leechers": 17455,
+    "size": "28.7 GB",
+    "date": 1642185000,
+    "uploader": "FitGirl",
+    "link": "https://1337xx.to/torrent/5114700/God-of-War-v1-0-1-Day-1-Patch-Build-8008283-Bonus-OST-MULTi18-FitGirl-Repack-Selective-Download-from-26-GB/"
+  },
+  {
+    "name": "God of War (2022) MULTi19-ElAmigos",
+    "seeders": 1756,
+    "leechers": 1740,
+    "size": "30.5 GB",
+    "date": 1642185000,
+    "uploader": "BedBug",
+    "link": "https://1337xx.to/torrent/5114679/God-of-War-2022-MULTi19-ElAmigos/"
+  }
+  ...
+]
 ```
 
 Geting magnet link and file list from 1337x site:
 
-http://samcloud.tplinkdns.com:50000/getTorrentData?link=http://1337x.to/torrent/1835137/Call-of-Duty-2-1-3-Repack-Mr-DJ/&site=1337x
+http://samcloud.tplinkdns.com:50000/getTorrentData?link=https://1337xx.to/torrent/5114679/God-of-War-2022-MULTi19-ElAmigos/&site_id=1
 
 Returns JSON:
 ```yaml
 {
-  "magnet": "magnet:?xt=urn:btih:97A1E506E2A0…",
+  "magnet": "magnet:?xt=urn:btih:4F515CD16844D3...announce",
   "files": [
-    "Torrent downl..txt (0.0 KB)",
-    "Torrent Downl….txt (0.0 KB)",
-    "Torrent downl….txt (0.0 KB)",
-    "autorun.inf (0.1 KB)",
-    "Instructions.txt (1.3 KB)",
-    "Icon.ico (14.0 KB)",
-    "Setup.exe (21.2 MB)",
-    "DJ.bin (3.4 GB)"
+    "G1odoW6ar-elamigos.part01.rar (2.0 GB)",
+    "G1odoW6ar-elamigos.part02.rar (2.0 GB)",
+    "G1odoW6ar-elamigos.part03.rar (2.0 GB)",
+    "G1odoW6ar-elamigos.part04.rar (2.0 GB)",
+    "G1odoW6ar-elamigos.part05.rar (2.0 GB)",
+    "G1odoW6ar-elamigos.part06.rar (2.0 GB)",
+    "G1odoW6ar-elamigos.part07.rar (2.0 GB)",
+    "G1odoW6ar-elamigos.part08.rar (2.0 GB)",
+    "G1odoW6ar-elamigos.part09.rar (2.0 GB)",
+    "G1odoW6ar-elamigos.part10.rar (2.0 GB)",
+    "G1odoW6ar-elamigos.part11.rar (2.0 GB)",
+    "G1odoW6ar-elamigos.part12.rar (2.0 GB)",
+    "G1odoW6ar-elamigos.part13.rar (2.0 GB)",
+    "G1odoW6ar-elamigos.part14.rar (2.0 GB)",
+    "G1odoW6ar-elamigos.part15.rar (2.0 GB)",
+    "G1odoW6ar-elamigos.part16.rar (1.2 GB)"
   ]
 }
 ```
@@ -99,7 +119,7 @@ You need Python version 3.x to run this
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install necessary libraries:
 
-flask, flask-cors, waitress, requests, bs4, lxml
+flask, flask-cors, waitress, requests, bs4, lxml, profanity_filter
 
 ```yaml
 pip install {package name}

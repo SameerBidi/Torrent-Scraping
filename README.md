@@ -119,9 +119,9 @@ You need Python version 3.x to run this
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install necessary libraries:
 
+```yaml
 flask, flask-cors, waitress, requests, bs4, lxml, profanity_filter
 
-```yaml
 pip install {package name}
 ```
 
